@@ -3,7 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 3289;
+const port = 9999;
 const bodyParser = require('body-parser');
 const router = require('./routes');
 const cors = require('cors');
@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
 app.use('/api/v1', router);
 app.listen(port, () => {
-	console.log(`TeachMe-DailyNews-Backend ${port}`);
+	console.log(`coffee_shop - Backend ${port}`);
 });
 
 //TES PUSH/PULL
