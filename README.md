@@ -98,6 +98,6 @@ npm start / nodemon
  Coffee Shop!
  | profile | Name | Stack | Github | Linkedin |
  | ------- | ---- | ------ | ------ | -------- |
- | ![profile Vickri][img-Vickri] | Vickri Fahrurozi | Backend | [Vickri](https://github.com/VickriFahrurozi)|[Vickri](https://www.linkedin.com/in/vickri-fahrurozi) 
+ | ![profile Vickri][img-Vickri] | Vickri Fahrurozi | FullStack | [Vickri](https://github.com/VickriFahrurozi)|[Vickri](https://www.linkedin.com/in/vickri-fahrurozi) 
 
 [img-Vickri]: https://avatars.githubusercontent.com/u/40363306?v=4
