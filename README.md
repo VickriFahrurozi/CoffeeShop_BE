@@ -65,10 +65,9 @@ npm start / nodemon
 
   
 # Features Application
-- [x] Auth.
-- [x] Order.
-- [x] Order Proccess.
-- [x] Product.
+- [o] Auth.
+- [o] Order.
+- [o] Product.
 - [x] Profile.
 - [x] Coupon.
 - [x] Delivery.
