@@ -22,7 +22,7 @@ module.exports = {
 					} else {
 						if (!results.length) {
 							reject({
-								message: 'Email/Password Salah',
+								message: 'Email Not Found',
 							});
 						} else {
 							bcrypt.compare(
@@ -31,7 +31,7 @@ module.exports = {
 								function (err, result) {
 									if (err) {
 										reject({
-											message: 'Error When Comparing Password',
+											message: 'Password Incorrect',
 										});
 									}
 									if (result) {
@@ -45,18 +45,25 @@ module.exports = {
 												expiresIn: '1d',
 											}
 										);
-										resolve({
-											message: 'Login Success',
-											status: 200,
-											data: {
-												token,
-												id: results[0].account_id,
-												role: results[0].account_role,
-											},
-										});
+										db.query(
+											`select profile_display_name,profile_picture from profiles where profile_id = ${results[0].account_id}`,
+											(errprofile, resultprofile) => {
+												resolve({
+													message: 'Login Success',
+													status: 200,
+													data: {
+														token,
+														id: results[0].account_id,
+														role: results[0].account_role,
+														profile_name: resultprofile[0].profile_display_name,
+														picture: resultprofile[0].profile_picture,
+													},
+												});
+											}
+										);
 									} else {
 										reject({
-											message: 'Email/Password Salah',
+											message: 'Incorrect Password',
 										});
 									}
 								}
@@ -67,7 +74,6 @@ module.exports = {
 			);
 		});
 	},
-
 	register: (req, res) => {
 		return new Promise((resolve, reject) => {
 			const { email, password, phoneNumber, confirmpassword } = req.body;

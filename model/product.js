@@ -8,119 +8,300 @@ const FileValidation = require('../helper/filevalidation');
 const { error, success } = require('../helper/message');
 
 module.exports = {
-	addNewPost: (req, res) => {
+	addNewProduct: (req, res) => {
 		return new Promise((resolve, reject) => {
 			const {
-				account_id,
-				post_cover,
-				post_title,
-				post_category,
-				post_fill,
-				post_link,
+				product_name,
+				product_picture,
+				product_category,
+				product_detail,
+				product_description,
+				product_delivery_method,
+				product_stock,
+				xl,
+				l,
+				r,
+				size100g,
+				size250g,
+				size500g,
+				sizeaddon,
 			} = req.body;
-			const { profile_id } = req.query;
-			if (profile_id != account_id) {
-				reject({
-					message:
-						'Data Profile_Id di Body Harus Sama dengan data Account_id di Params',
-					status: 400,
-				});
-			} else {
-				if (req.file) {
-					if (FileValidation(req.file.filename) != 1) {
-						reject({
-							message:
-								'Format File Tidak Didukung ! , Format Yang Di Izinkan : Jpg,Png,Jpeg,Webp',
-							status: 400,
-						});
-					} else {
-						db.query(
-							`INSERT into post (profile_id,post_cover,post_title,post_category,post_fill,post_link) 
-					   Values ("${account_id}","${req.file.filename}","${post_title}","${post_category}","${post_fill}","${post_link}")`,
-							(err, result) => {
-								const lastid = result.insertId;
-
-								if (err) {
-									reject({
-										message: 'Data Artikel Tidak Berhasil Di Inputt',
-										status: 400,
-									});
-								} else {
-									db.query(
-										`insert into post_statistic (post_id) values("${lastid}")`,
-										(err2, result2) => {
-											if (err2) {
-												console.log(err2, 'ini errornya');
-											} else {
-												console.log(result2, 'ini resultnya');
-											}
-										}
-									);
-
-									resolve({
-										message:
-											'Artikel Berhasil Ditambahkan , Silahkan Menunggu Proses Persetujuan Admin',
-										status: 200,
-										result,
-									});
-								}
-							}
-						);
-					}
-				} else {
-					res.status(400).send({
-						message: 'Cover Artikel Tidak Boleh Kosong',
+			if (req.file) {
+				if (FileValidation(req.file.filename) != 1) {
+					reject({
+						message:
+							'Format File Tidak Didukung ! , Format Yang Di Izinkan : Jpg,Png,Jpeg,Webp',
+						status: 400,
 					});
-				}
-			}
-		});
-	},
-	getAllAcceptedPost: (req, res) => {
-		//get All Movies With Join
-		return new Promise((resolve, reject) => {
-			const { limit, page, order_by, sort } = req.query;
-			let offset = page * limit - limit;
-			db.query(
-				`SELECT post.post_id,post.profile_id, post.post_cover,post.post_title,post.post_category,post.post_fill, post.created_at,post_statistic.like_count,post_statistic.comment_count 
-				from post JOIN post_statistic on post.post_id = post_statistic.post_id
-				 where post_status = 'accepted' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
-				(error, result) => {
+				} else {
+					let product_size = [];
+					let product_price = [];
 					db.query(
-						`SELECT * from post where post_status = 'accepted'`,
-						(error2, result2) => {
-							let totalpage = Math.ceil(result2.length / limit);
-							if (error || error2) {
-								console.log(error, 'ini error 1', error2, 'ini error 2');
+						`INSERT into product (product_name,product_picture,product_category,product_detail,product_description,product_delivery_method,product_stock) 
+					   Values ("${product_name}","${
+							req.file.filename
+						}" ,"${product_category.toLowerCase()}","${product_detail}","${product_description}","${product_delivery_method}","${product_stock}")`,
+						(err, result) => {
+							const lastid = result.insertId;
+
+							if (err) {
 								reject({
-									message: `Failed To Get All Accepted Post , ${error} ,error ,${error2}`,
+									message: 'Data Product Gagal Di Tambahkan',
 									status: 400,
 								});
 							} else {
-								db.query(
-									`select post_comment.post_id, post_comment.profile_id, profiles.profile_name,post_comment.comment_message from post_comment INNER JOIN profiles On post_comment.profile_id = profiles.profile_id `,
-									(errcomment, resultcomment) => {
-										console.log(resultcomment, 'Ini result Commentnya');
-
-										resolve({
-											message: 'Get All Accepted Post Success',
-											status: 200,
-											totalpage: totalpage,
-											totalRow: result.length,
-											totaldata: result2.length,
-											list: {
-												post: result,
-												comment: resultcomment,
-											},
-										});
+								if (
+									product_category.toLowerCase() == 'coffee' ||
+									product_category.toLowerCase() == 'noncoffee'
+								) {
+									(product_size[0] = 'xl'),
+										(product_size[1] = 'l'),
+										(product_size[2] = 'r'),
+										(product_price[0] = xl),
+										(product_price[1] = l),
+										(product_price[2] = r);
+									db.query(
+										`UPDATE product SET price_range = "${product_price[0]},${product_price[1]},${product_price[2]}" Where product_id = ${lastid}`
+									);
+									for (let i = 0; i <= 2; i++) {
+										db.query(
+											`insert into price (product_id,product_size,product_price) values("${lastid}","${product_size[i]}","${product_price[i]}")`
+										);
 									}
-								);
+								} else if (product_category.toLowerCase() == 'food') {
+									(product_size[0] = '100g'),
+										(product_size[1] = '250g'),
+										(product_size[2] = '500g'),
+										(product_price[0] = size100g),
+										(product_price[1] = size250g),
+										(product_price[2] = size500g);
+									db.query(
+										`UPDATE product SET price_range = "${product_price[0]},${product_price[1]},${product_price[2]}" Where product_id = ${lastid}`
+									);
+									for (let i = 0; i <= 2; i++) {
+										db.query(
+											`insert into price (product_id,product_size,product_price) values("${lastid}","${product_size[i]}","${product_price[i]}")`
+										);
+									}
+								} else if (product_category.toLowerCase() == 'addon') {
+									(product_size[0] = 'r'), (product_price[0] = sizeaddon);
+									db.query(
+										`UPDATE product SET price_range = "${product_price[0]}" Where product_id = ${lastid}`
+									);
+									db.query(
+										`insert into price (product_id,product_size,product_price) values("${lastid}","${product_size[0]}","${product_price[0]}")`
+									);
+								}
+								resolve({
+									message: 'Product Makanan Berhasil Di Tambahkan !',
+									status: 200,
+									result,
+								});
 							}
 						}
 					);
 				}
+			} else {
+				res.status(400).send({
+					message: 'Foto Product Tidak Boleh Kosong',
+				});
+			}
+		});
+	},
+	getAllProduct: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { limit, page, order_by, sort, category } = req.query;
+			let offset = page * limit - limit;
+			if (category == 'all') {
+				db.query(
+					`SELECT product_id,product_name, product_picture,product_category,product_detail,product_description,price_range,product_delivery_method,product_stock,product_buy_count
+					from product ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
+					(error, result) => {
+						if (error) {
+							reject({
+								message: `Failed To get Product , ${error}`,
+								status: 400,
+							});
+						} else {
+							db.query(`select * from product`, (error2, result2) => {
+								let totalpage = Math.ceil(result2.length / limit);
+								resolve({
+									message: 'Get All Accepted Post Success',
+									status: 200,
+									totalpage: totalpage,
+									totalRow: result.length,
+									totaldata: result2.length,
+									list: result,
+								});
+							});
+						}
+					}
+				);
+			} else {
+				db.query(
+					`SELECT product_id,product_name, product_picture,product_category,product_detail,product_description,price_range,product_delivery_method,product_stock,product_buy_count
+					from product where product_category = '${category}' ORDER BY ${order_by} ${sort} limit ${limit} OFFSET ${offset} `,
+					(error, result) => {
+						if (error) {
+							reject({
+								message: `Failed To get Product , ${error}`,
+								status: 400,
+							});
+						} else {
+							db.query(
+								`select * from product where product_category = '${category}'`,
+								(error2, result2) => {
+									let totalpage = Math.ceil(result2.length / limit);
+									resolve({
+										message: 'Get All Accepted Post Success',
+										status: 200,
+										totalpage: totalpage,
+										totalRow: result.length,
+										totaldata: result2.length,
+										list: result,
+									});
+								}
+							);
+						}
+					}
+				);
+			}
+		});
+	},
+	getProduct: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { id } = req.query;
+
+			db.query(
+				`SELECT product_id,product_name, product_picture,product_category,product_detail,product_description,price_range,product_delivery_method,product_stock,product_buy_count
+					from product where product_id = ${id} `,
+				(error, result) => {
+					if (error) {
+						reject({
+							message: `Failed To get Product Tes Product, ${error}`,
+							status: 400,
+						});
+					} else {
+						resolve({
+							message: 'Get All Accepted Post Success',
+							status: 200,
+							list: result,
+						});
+					}
+				}
 			);
 		});
 	},
+	getOrder: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { id } = req.query;
+
+			db.query(
+				`SELECT * from orders where profile_id = ${id} AND NOT order_status = 'done'  `,
+				(error, result) => {
+					if (error) {
+						reject({
+							message: `Failed To get Product Tes Product, ${error}`,
+							status: 400,
+						});
+					} else {
+						resolve({
+							message: 'Get All Accepted Post Success',
+							status: 200,
+							list: result,
+						});
+					}
+				}
+			);
+		});
+	},
+	updateOrder: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			const { order_id, status } = req.query;
+
+			db.query(
+				`UPDATE orders SET order_status = '${status}' where orders_id= '${order_id}' `,
+				(error, result) => {
+					if (error) {
+						console.log('errorrrr');
+						reject({
+							message: `Failed To get Product Tes Product, ${error}`,
+							status: 400,
+						});
+					} else {
+						resolve({
+							message: 'Get All Accepted Post Success',
+							status: 200,
+							list: result,
+						});
+					}
+				}
+			);
+		});
+	},
+	getAllOrder: (req, res) => {
+		//get All Movies With Join
+		return new Promise((resolve, reject) => {
+			db.query(
+				`SELECT * from orders where NOT order_status = 'done' AND NOT order_status='canceled' `,
+				(error, result) => {
+					if (error) {
+						reject({
+							message: `Failed To get Product Tes Product, ${error}`,
+							status: 400,
+						});
+					} else {
+						resolve({
+							message: 'Get All Accepted Post Success',
+							status: 200,
+							list: result,
+						});
+					}
+				}
+			);
+		});
+	},
+	addOrder: (req, res) => {
+		return new Promise((resolve, reject) => {
+			const {
+				name,
+				profile_id,
+				product_id,
+				order_price,
+				order_address,
+				order_payment_method,
+				order_size,
+				order_quantity,
+			} = req.query;
+
+			db.query(
+				`INSERT into orders (product_name,profile_id,product_id,order_price,order_address,order_payment_method,order_size,order_quantity) 
+					   Values ("${name}","${profile_id}","${product_id}","${order_price}" ,"${order_address}","${order_payment_method}","${order_size}","${order_quantity}")`,
+				(err, result) => {
+					if (err) {
+						console.log('error');
+						reject({
+							message: 'Data Order Gagal Di Tambahkan',
+							err,
+							status: 400,
+						});
+					} else {
+						console.log('berhasil');
+						resolve({
+							message: 'Order Berhasil Di Tambahkan !',
+							status: 200,
+							result,
+						});
+					}
+				}
+			);
+		});
+	},
+
 	getAllWaitingPost: (req, res) => {
 		//get All Movies With Join
 		return new Promise((resolve, reject) => {

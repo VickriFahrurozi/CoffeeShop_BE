@@ -3,7 +3,7 @@
 const express = require('express');
 const app = express();
 const authRouter = require('./authRouter');
-const postRouter = require('./postRouter');
+const productRouter = require('./productRouter');
 const usersRouter = require('./usersRouter');
 const commentRouter = require('./commentRouter');
 const likeunlikeRouter = require('./likeRouter');
@@ -12,7 +12,7 @@ const notificationRouter = require('./notificationRouter');
 const verifyAuth = require('../helper/verifyAuth');
 
 app.use('/auth', authRouter);
-app.use('/post', postRouter);
+app.use('/product', productRouter);
 app.use('/users', usersRouter);
 app.use('/comment', commentRouter);
 app.use('/like', likeunlikeRouter);

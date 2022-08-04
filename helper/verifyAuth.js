@@ -162,7 +162,7 @@ const Auth = {
 					next();
 				} else {
 					return res.status(404).send({
-						message: 'HANYA ADMIN YANG BISA MENYETUJUI/MENOLAK ARTIKEL !!',
+						message: 'HANYA ADMIN YANG BISA MENAMBAHKAN PRODUK',
 					});
 				}
 			});
