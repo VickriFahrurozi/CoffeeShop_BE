@@ -1,6 +1,6 @@
 /** @format */
 
-const mysql = require('mysq2');
+const mysql = require('mysql2');
 const { host, user, password, database } = process.env;
 const db = mysql.createPool({
 	connectionLimit: 100,
