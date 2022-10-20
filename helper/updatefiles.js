@@ -5,24 +5,24 @@ const db = require('./db_connections');
 const deletecover = (FileLocation) => {
 	fs.unlink(FileLocation, (err) => {
 		if (err) {
-			console.log(`Error di FS unlink ${err}`);
+			console.log(`Error --> FS unlink ${err}`);
 		} else {
-			console.log('sukses');
+			console.log('success');
 		}
 	});
 };
-const updatecover = (post_id) => {
+const updatecover = (package_id) => {
 	db.query(
-		`select post_cover from post where post_id = ${post_id}`,
+		`select package_image from package where package_id = ${package_id}`,
 		(err, result) => {
 			if (err) {
-				console.log('error di db query');
+				console.log('error in db query');
 				return 0;
 			} else if (!result.length) {
-				console.log('Data Cover Tidak Ada , Tidak Ada Cover yang diganti');
+				console.log('Image Data Not Found , No Image Updated');
 				return 0;
 			} else {
-				deletecover(`./upload/${result[0].post_cover}`);
+				deletecover(`./upload/${result[0].package_image}`);
 				return 1;
 			}
 		}
