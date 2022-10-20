@@ -3,21 +3,13 @@
 const express = require('express');
 const app = express();
 const authRouter = require('./authRouter');
-const productRouter = require('./productRouter');
-const usersRouter = require('./usersRouter');
-const commentRouter = require('./commentRouter');
-const likeunlikeRouter = require('./likeRouter');
-const bookmarkRouter = require('./bookmarkRouter');
-const notificationRouter = require('./notificationRouter');
-const verifyAuth = require('../helper/verifyAuth');
-
+const packagerouter = require('./packageRouter');
+const orderrouter = require('./orderRouter');
+const accountrouter = require('./accountRouter');
 app.use('/auth', authRouter);
-app.use('/product', productRouter);
-app.use('/users', usersRouter);
-app.use('/comment', commentRouter);
-app.use('/like', likeunlikeRouter);
-app.use('/bookmark', bookmarkRouter);
-app.use('/notification', notificationRouter);
+app.use('/package', packagerouter);
+app.use('/order', orderrouter);
+app.use('/account', accountrouter);
 
 module.exports = app;
 
