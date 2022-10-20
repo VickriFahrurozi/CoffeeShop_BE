@@ -1,5 +1,6 @@
 const bookmark = require('../model/bookmark');
-
+  //
+  //
 module.exports = {
 	getBookmark: async (req, res) => {
 		try {
@@ -35,3 +36,7 @@ module.exports = {
 	},
 
 }
+
+
+
+//

@@ -5,4 +5,7 @@ router.get('/:id', bookmarksController.getById)
 router.get('/:id/post/:id_post',bookmarksController.getBookmark)
 router.post('/:id', bookmarksController.addBookmark)
 router.delete('/:id', bookmarksController.deleteBookmark)
-module.exports =router
+module.exports = router
+
+
+//

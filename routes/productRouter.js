@@ -44,3 +44,7 @@ router.patch(
 router.delete('/', verifyAuth.VerifyUpdatePost, productController.deletepost);
 
 module.exports = router;
+
+
+
+//

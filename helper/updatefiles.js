@@ -30,3 +30,7 @@ const updatecover = (post_id) => {
 };
 
 module.exports = { deletecover, updatecover };
+
+
+
+//
